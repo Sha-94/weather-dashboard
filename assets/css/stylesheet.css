@@ -1,0 +1,70 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.text-centered{
+  text-align: center;
+}
+.flex{
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.space-between{
+  justify-content: space-between;
+}
+
+body{
+  display: grid;
+  grid-template-areas: 
+    'h h'
+    'm m'
+}
+
+.containr {
+  padding: 5px;
+  grid-area: m;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-areas: 
+    '. . . . . . .'
+    '. s c c c c .'
+    '. s c c c c .'
+    '. . . . . . .'
+}
+
+.header{
+  grid-area: h;
+  text-align: center;
+  background-color: black;
+  color: white;
+}
+
+.sidebar {
+  padding: 5px;
+  grid-area: s; 
+  border: 3px solid blue;
+
+}
+
+.content {
+  padding: 5px;
+  grid-area: c;
+  border: 3px solid green;
+}
+.overview-section{
+  padding: 5px;
+
+}
+.forecast-section{
+  padding: 5px;
+}
+.forecasts {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+}
