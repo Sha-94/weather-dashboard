@@ -56,14 +56,14 @@ body{
   grid-area: c;
   border: 3px solid green;
 }
-.overview-section{
+#overview-section{
   padding: 5px;
 
 }
-.forecast-section{
+#forecast-section{
   padding: 5px;
 }
-.forecasts {
+#forecasts {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-around;
