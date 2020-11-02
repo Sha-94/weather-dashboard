@@ -21,100 +21,19 @@
       <div class="search">
         <h6>Search for a city: </h6>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Search">
+          <input id="search-input" type="text" class="form-control" placeholder="Search">
           <div class="input-group-append">
-            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+            <button id="search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
           </div>
         </div>
       </div>
       <div class="search-history">
-        <ul class="list-group" id="history-list">
-          <!-- <li class="list-group-item">Austin</li>
-          <li class="list-group-item">Houston</li>
-          <li class="list-group-item">Dallas</li>
-          <li class="list-group-item">San Antonio</li> -->
-        </ul>
+        <ul class="list-group" id="history-list"> </ul>
       </div>
     </sidebar>
     <section class="content">
-      <div class="card" id="overview-section">
-        <!-- <h3 class="card-header">Atlanta</h3>
-        <div class="card-body">
-          <div>
-            <p>Temperature: 90.9 ºF</p>
-          </div>
-          <div>
-            <p>Humidity: 41%</p>
-          </div>
-          <div>
-            <p>Wind Speed: 4.7</p>
-          </div>
-          <div>
-            <p>UV Index: 9.49</p>
-          </div>
-        </div> -->
-      </div>
-      <section id="forecast-section">
-        <!-- <h3>5-Day Forecast:</h3>
-        <div id="forecasts">
-          <div class="card">
-            <h5 class="card-header text-centered"> 8/16/2019</h5>
-            <div class="card-body">
-              <div>
-                <p>Temperature: 90.9 ºF</p>
-              </div>
-              <div>
-                <p>Humidity: 41%</p>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h5 class="card-header text-centered"> 8/16/2019</h5>
-            <div class="card-body">
-              <div>
-                <p>Temperature: 90.9 ºF</p>
-              </div>
-              <div>
-                <p>Humidity: 41%</p>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h5 class="card-header text-centered"> 8/16/2019</h5>
-            <div class="card-body">
-              <div>
-                <p>Temperature: 90.9 ºF</p>
-              </div>
-              <div>
-                <p>Humidity: 41%</p>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h5 class="card-header text-centered"> 8/16/2019</h5>
-            <div class="card-body">
-              <div>
-                <p>Temperature: 90.9 ºF</p>
-              </div>
-              <div>
-                <p>Humidity: 41%</p>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h5 class="card-header text-centered"> 8/16/2019</h5>
-            <div class="card-body">
-              <div>
-                <p>Temperature: 90.9 ºF</p>
-              </div>
-              <div>
-                <p>Humidity: 41%</p>
-              </div>
-            </div>
-          </div>
-        </div>
-         -->
-      </section>
+      <div id="overview-section"></div>
+      <section id="forecast-section"></section>
     </section>
   </main>
   <script src="./assets/js/dashboard.js"></script>

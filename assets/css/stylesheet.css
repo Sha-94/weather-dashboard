@@ -47,14 +47,11 @@ body{
 .sidebar {
   padding: 5px;
   grid-area: s; 
-  border: 3px solid blue;
-
 }
 
 .content {
   padding: 5px;
   grid-area: c;
-  border: 3px solid green;
 }
 #overview-section{
   padding: 5px;

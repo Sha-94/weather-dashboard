@@ -1,64 +1,69 @@
 const searchHistoryListEl = document.querySelector('#history-list');
 const overviewCardEl = document.querySelector('#overview-section');
 const forecastSectionEl = document.querySelector('#forecast-section');
+const searchButtonEl = document.querySelector('#search-button');
+const searchInputEl = document.querySelector('#search-input');
 
 const TEMPERATURE_PROPERTY = 'temp';
 const HUMIDITY_PROPERTY = 'humid';
-const UV_INDEX_PROPERTY = 'uv'
+const PRESSURE_PROPERY = 'pressure';
+const API_KEY = 'f2a6e7696c66de5d201dd8ea3223451c';
 
-var searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+searchButtonEl.addEventListener('click', fetchWeather);
+displaySearchHistory();
 
-const mockData = {
-  city: 'Atlanta',
-  date: '8/19/2020',
-  temperature: '99ºF',
-  humidity: '70%',
-  uvIndex: '9.49',
-  fiveDayForecast: [
-    {
-      date: '8/19/2020',
-      temperature: '99ºF',
-      humidity: '70%'
-    },
-    {
-      date: '8/20/2020',
-      temperature: '94ºF',
-      humidity: '72%'
-    },
-    {
-      date: '8/21/2020',
-      temperature: '99ºF',
-      humidity: '75%'
-    },
-    {
-      date: '8/22/2020',
-      temperature: '93ºF',
-      humidity: '12%'
-    },
-    {
-      date: '8/23/2020',
-      temperature: '97ºF',
-      humidity: '67%'
-    },
-  ]
+
+function fetchWeather(event) {
+  let location = event.target.textContent ? event.target.textContent : searchInputEl.value;
+  let apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${location}&cnt=6&units=imperial&APPID=${API_KEY}`;
+
+  fetch(apiUrl).then(response => {
+    if (response.ok) {
+      response.json().then(data => {
+        searchInputEl.textContent = '';
+        updateSearchHistory(data.name);
+        displayOverview(data);
+        fetchForecast(data.coord.lat, data.coord.lon);
+      })
+    } else {
+      alert('Please use a valid city');
+    }
+  })
 }
 
 function clearNodes(parent) {
   while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
+    parent.removeChild(parent.firstChild);
   }
 }
 
+function getSearchHistory() {
+  return JSON.parse(localStorage.getItem('searchHistory')) || [];
+}
+function updateSearchHistory(city) {
+  let searchHistory = getSearchHistory();
+  if(!searchHistory.includes(city)){
+    searchHistory.push(city);
+  }
+
+  localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+  displaySearchHistory();
+
+}
+
 function displaySearchHistory() {
+  clearNodes(searchHistoryListEl);
+
+  let searchHistory = getSearchHistory();
   searchHistory.forEach(item => {
     let listItemEl = document.createElement('li');
     listItemEl.classList = "list-group-item";
     listItemEl.textContent = item;
+    listItemEl.addEventListener('mouseover', activate);
+    listItemEl.addEventListener('mouseout', deactivate);
+    listItemEl.addEventListener('click', fetchWeather);
     searchHistoryListEl.appendChild(listItemEl);
   });
-
-  displayOverview(mockData);
-  displayForecast(mockData);
 }
 
 function displayOverview(data) {
@@ -66,30 +71,31 @@ function displayOverview(data) {
   const cardBodyEl = document.createElement('div');
 
   clearNodes(overviewCardEl);
-
+  overviewCardEl.classList= '';
   cardHeaderEl.classList = 'card-header';
-  cardHeaderEl.textContent = data.city;
+  cardHeaderEl.innerHTML = `${data.name} (${getLocalDate(data.dt)}) <img src= "${getIconUrl(data.weather[0].icon)}">`;
 
   cardBodyEl.classList = 'card-body';
-  cardBodyEl.appendChild(generateCardBodyElement(TEMPERATURE_PROPERTY, data.temperature));
-  cardBodyEl.appendChild(generateCardBodyElement(HUMIDITY_PROPERTY, data.humidity));
-  cardBodyEl.appendChild(generateCardBodyElement(UV_INDEX_PROPERTY, data.uvIndex));
+  cardBodyEl.appendChild(generateCardBodyElement(TEMPERATURE_PROPERTY, data.main.temp));
+  cardBodyEl.appendChild(generateCardBodyElement(HUMIDITY_PROPERTY, data.main.humidity));
+  cardBodyEl.appendChild(generateCardBodyElement(PRESSURE_PROPERY, data.main.pressure));
 
+  overviewCardEl.classList='card'
   overviewCardEl.appendChild(cardHeaderEl);
   overviewCardEl.appendChild(cardBodyEl);
-   
+
 }
 
 function generateCardBodyElement(property, value) {
   const divEl = document.createElement('div');
   const paragraphEl = document.createElement('p');
 
-  switch(property) {
-    case TEMPERATURE_PROPERTY: paragraphEl.textContent = `Temperature: ${value}`;
-    break;
-    case HUMIDITY_PROPERTY: paragraphEl.textContent = `Humidity: ${value}`;
-    break;
-    case UV_INDEX_PROPERTY: paragraphEl.textContent = `UV Index: ${value}`;
+  switch (property) {
+    case TEMPERATURE_PROPERTY: paragraphEl.textContent = `Temperature: ${value}º`;
+      break;
+    case HUMIDITY_PROPERTY: paragraphEl.textContent = `Humidity: ${value}%`;
+      break;
+    case PRESSURE_PROPERY: paragraphEl.textContent = `Pressure: ${value}`;
   }
 
   divEl.appendChild(paragraphEl);
@@ -101,13 +107,13 @@ function displayForecast(data) {
   const forecastsDivEl = document.createElement('div');
 
   clearNodes(forecastSectionEl);
-  
+
   forecastHeaderEl.textContent = '5-Day Forecast: ';
   forecastsDivEl.setAttribute('id', 'forecasts');
 
-  data.fiveDayForecast.forEach(forecast => {
-    forecastsDivEl.appendChild(generateForecastCard(forecast));
-  })
+  for (let i = 1; i <= 5; i++) {
+    forecastsDivEl.appendChild(generateForecastCard(data.daily[i]));
+  }
 
   forecastSectionEl.appendChild(forecastHeaderEl);
   forecastSectionEl.appendChild(forecastsDivEl);
@@ -115,6 +121,7 @@ function displayForecast(data) {
 
 function generateForecastCard(forecast) {
   const divCardEl = document.createElement('div');
+  const imgEl = document.createElement('img');
   const cardHeaderEl = document.createElement('h5');
   const cardBodyEl = document.createElement('div');
 
@@ -122,8 +129,11 @@ function generateForecastCard(forecast) {
   cardHeaderEl.classList = 'card-header text-centered';
   cardBodyEl.classList = 'card-body';
 
-  cardHeaderEl.textContent = forecast.date;
-  cardBodyEl.appendChild(generateCardBodyElement(TEMPERATURE_PROPERTY, forecast.temperature));
+  imgEl.setAttribute('src', getIconUrl(forecast.weather[0].icon))
+  cardHeaderEl.textContent = getLocalDate(forecast.dt);
+
+  cardBodyEl.appendChild(imgEl);
+  cardBodyEl.appendChild(generateCardBodyElement(TEMPERATURE_PROPERTY, forecast.temp.day));
   cardBodyEl.appendChild(generateCardBodyElement(HUMIDITY_PROPERTY, forecast.humidity));
 
   divCardEl.appendChild(cardHeaderEl);
@@ -132,6 +142,33 @@ function generateForecastCard(forecast) {
   return divCardEl;
 }
 
-var array = ["Austin", "Houston", "Dallas", "San Antonio"];
-localStorage.setItem('searchHistory', JSON.stringify(array));
-displaySearchHistory();
+function fetchForecast(lat, lon) {
+  let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=minutely,hourly&appid=${API_KEY}`
+
+  fetch(apiUrl).then(response => {
+    if (response.ok) {
+      response.json().then(data => {
+        displayForecast(data);
+      })
+    }
+  })
+}
+
+function getLocalDate(utc) {
+  return new Date(utc * 1000).toLocaleDateString();
+}
+
+function getIconUrl(icon){
+  return `http://openweathermap.org/img/w/${icon}.png`
+}
+
+function activate(event) {
+  let element = event.target;
+  element.classList.add('active');
+
+}
+
+function deactivate(event) {
+  let element = event.target;
+  element.classList.remove('active');
+}
