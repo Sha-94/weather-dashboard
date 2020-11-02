@@ -17,7 +17,7 @@ function fetchWeather(event) {
   event.preventDefault();
 
   let location = event.target.textContent ? event.target.textContent : searchInputEl.value;
-  let apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${location}&cnt=6&units=imperial&APPID=${API_KEY}`;
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&cnt=6&units=imperial&APPID=${API_KEY}`;
 
   fetch(apiUrl).then(response => {
     if (response.ok) {
@@ -161,7 +161,7 @@ function getLocalDate(utc) {
 }
 
 function getIconUrl(icon){
-  return `http://openweathermap.org/img/w/${icon}.png`
+  return `https://openweathermap.org/img/w/${icon}.png`
 }
 
 function activate(event) {
