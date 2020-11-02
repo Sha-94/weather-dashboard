@@ -14,13 +14,15 @@ displaySearchHistory();
 
 
 function fetchWeather(event) {
+  event.preventDefault();
+
   let location = event.target.textContent ? event.target.textContent : searchInputEl.value;
   let apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${location}&cnt=6&units=imperial&APPID=${API_KEY}`;
 
   fetch(apiUrl).then(response => {
     if (response.ok) {
       response.json().then(data => {
-        searchInputEl.textContent = '';
+        searchInputEl.value = '';
         updateSearchHistory(data.name);
         displayOverview(data);
         fetchForecast(data.coord.lat, data.coord.lon);
