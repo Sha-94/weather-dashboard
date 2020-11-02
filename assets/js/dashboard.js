@@ -159,7 +159,7 @@ function getLocalDate(utc) {
 }
 
 function getIconUrl(icon){
-  return `http://openweathermap.org/img/w/${icon}.png`
+  return `https://openweathermap.org/img/w/${icon}.png`
 }
 
 function activate(event) {
